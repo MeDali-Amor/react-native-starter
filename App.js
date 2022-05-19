@@ -1,20 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { useFonts } from "expo-font";
+import StackNavigator from "./navigation/StackNavigator";
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+    const [loaded] = useFonts({
+        "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+        // "Roboto-SemiBold": require("./assets/fonts/"),
+        "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+        "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+        "Roboto-Light": require("./assets/fonts/Roboto-Light.ttf"),
+        "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
+    });
+    const theme = {
+        ...DefaultTheme,
+        colors: {
+            ...DefaultTheme.colors,
+            background: "#fff",
+        },
+    };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    if (!loaded) return null;
+    return (
+        <NavigationContainer theme={theme}>
+            <StackNavigator />
+        </NavigationContainer>
+    );
+}
