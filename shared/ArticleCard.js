@@ -4,8 +4,8 @@ import { COLORS, SIZES, SHADOWS, assets } from "../constants";
 import { useEffect, useState } from "react";
 import { useWindowDimensions } from "react-native";
 
-const ArticleCard = ({ data, uri }) => {
-    const { height, width } = useWindowDimensions();
+const ArticleCard = ({ data, uri, width }) => {
+    // const { height, width } = useWindowDimensions();
 
     const [imgURL, setImgURL] = useState("");
     useEffect(() => {
@@ -26,9 +26,9 @@ const ArticleCard = ({ data, uri }) => {
         <TouchableOpacity
             style={{
                 backgroundColor: COLORS.white,
-                borderRadius: 36,
+                borderRadius: width / 10,
                 marginBottom: SIZES.extraLarge,
-                margin: 9,
+                margin: width / 32,
                 ...SHADOWS.dark,
                 width: width * 0.84,
                 height: width * 1.06,
@@ -47,7 +47,7 @@ const ArticleCard = ({ data, uri }) => {
                     resizeMode="cover"
                     style={{
                         width: "100%",
-                        borderRadius: 36,
+                        borderRadius: width / 10,
                         height: "100%",
                     }}
                 />
@@ -56,7 +56,7 @@ const ArticleCard = ({ data, uri }) => {
                         StyleSheet.absoluteFillObject,
                         {
                             backgroundColor: "rgba(0,0,0,0.3)",
-                            borderRadius: 36,
+                            borderRadius: width / 10,
                         },
                     ]}
                 ></View>
@@ -78,17 +78,17 @@ const ArticleCard = ({ data, uri }) => {
                 style={{
                     width: "100%",
                     position: "absolute",
-                    top: "40%",
+                    bottom: "35%",
                     left: 0,
-                    paddingHorizontal: 30,
-                    paddingBottom: 20,
+                    paddingHorizontal: width / 12,
+                    paddingBottom: width / 15,
                 }}
             >
                 <Text
                     style={{
                         fontFamily: "Roboto-Bold",
                         fontWeight: "bold",
-                        fontSize: SIZES.extraLarge,
+                        fontSize: width / 10,
                         color: COLORS.white,
                     }}
                 >
@@ -101,19 +101,23 @@ const ArticleCard = ({ data, uri }) => {
                     position: "absolute",
                     bottom: "15%",
                     left: 0,
-                    paddingHorizontal: 30,
-                    paddingBottom: 20,
+                    paddingHorizontal: width / 12,
+                    paddingBottom: width / 15,
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
                 }}
             >
-                <Image source={assets.logo} resizeMode="contain" />
+                <Image
+                    source={assets.logo}
+                    resizeMode="contain"
+                    style={{ height: width / 10 }}
+                />
                 <Text
                     style={{
                         // fontFamily: FONTS.bold,
                         // fontWeight: "",
-                        fontSize: SIZES.small,
+                        fontSize: width / 30,
                         color: COLORS.white,
                     }}
                 >
@@ -127,7 +131,7 @@ const ArticleCard = ({ data, uri }) => {
                     bottom: "0%",
                     left: 0,
                     paddingHorizontal: 0,
-                    paddingBottom: 20,
+                    paddingBottom: width / 15,
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-evenly",
@@ -137,7 +141,7 @@ const ArticleCard = ({ data, uri }) => {
                     style={{
                         // fontFamily: FONTS.bold,
                         // fontWeight: "",
-                        fontSize: SIZES.small,
+                        fontSize: width / 30,
                         color: COLORS.white,
                     }}
                 >
@@ -147,7 +151,7 @@ const ArticleCard = ({ data, uri }) => {
                     style={{
                         // fontFamily: FONTS.bold,
                         // fontWeight: "",
-                        fontSize: SIZES.small,
+                        fontSize: width / 30,
                         color: COLORS.white,
                     }}
                 >
@@ -157,7 +161,7 @@ const ArticleCard = ({ data, uri }) => {
                     style={{
                         // fontFamily: FONTS.bold,
                         // fontWeight: "",
-                        fontSize: SIZES.small,
+                        fontSize: width / 30,
                         color: COLORS.white,
                     }}
                 >

@@ -2,13 +2,13 @@ import React from "react";
 import { View, Text, Image, TextInput, StyleSheet } from "react-native";
 import { useWindowDimensions } from "react-native";
 import { COLORS, SIZES, assets } from "../constants";
-import { SwitchButton } from "../shared";
+import { MenuButton, SquarePlusButton, SwitchButton } from "../shared";
 
 const HomeHeader = () => {
     const { height, width } = useWindowDimensions();
     return (
-        <View style={styles.container}>
-            <View>
+        <View style={[styles.container, { width }]}>
+            <View style={{ width: width / 2 }}>
                 <Image
                     source={assets.logo}
                     resizeMode="contain"
@@ -19,8 +19,17 @@ const HomeHeader = () => {
                     }}
                 />
             </View>
-            <View>
+            <View
+                style={{
+                    width: width / 3,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                }}
+            >
+                <SquarePlusButton />
                 <SwitchButton />
+                <MenuButton />
             </View>
         </View>
     );

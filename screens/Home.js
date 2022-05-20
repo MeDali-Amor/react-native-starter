@@ -19,14 +19,11 @@ const Home = () => {
     const { height, width } = useWindowDimensions();
     const [dataList, setDataList] = useState([]);
     const [categories, setCategories] = useState([
-        { id: "1", title: "Trending" },
-        { id: "2", title: "My topics" },
-        { id: "3", title: "Local news" },
-        { id: "4", title: "Fact check" },
-        { id: "5", title: "Discover" },
+        { id: "0", title: "All" },
+        ,
     ]);
-    const [status, setStatus] = useState(categories[0]);
-    const uri = "https://8a78-197-2-77-70.eu.ngrok.io";
+    const [status, setStatus] = useState("All");
+    const uri = "https://e979-102-156-11-72.eu.ngrok.io";
     // const handleSearch = (value) => {
     //     let currentList = [...dataList];
     //     if (!value.length) return setDataList(currentList);
@@ -43,21 +40,41 @@ const Home = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(
-                    `${uri}/drupalwebsite/api/articles`
+                const res1 = await axios.get(
+                    `${uri}/drupalwebsite/api/v1/categories`
                 );
-                setDataList(res.data);
-                let cat = [
-                    ...new Set(
-                        res.data
-                            .map((arr) => arr.categories.split(","))
-                            .flat()
-                            .map((el) => el.trim())
-                    ),
-                ].map((el) => ({ title: el }));
-                console.log(cat);
-                setCategories(cat);
-                setStatus(cat[0]);
+                const res2 = await axios.get(
+                    `${uri}/drupalwebsite/api/v1/recettes`
+                );
+                const ctgs = [];
+                const uniqueCtgs = [];
+
+                const newCtgs = res1.data.filter((element) => {
+                    const isDuplicate = uniqueCtgs.includes(element.id);
+
+                    if (!isDuplicate) {
+                        uniqueCtgs.push(element.id);
+
+                        return true;
+                    }
+
+                    return false;
+                });
+                setCategories(newCtgs);
+                console.log(newCtgs);
+                setDataList(res2.data);
+
+                // let cat = [
+                //     ...new Set(
+                //         res.data
+                //             .map((arr) => arr.categories.split(","))
+                //             .flat()
+                //             .map((el) => el.trim())
+                //     ),
+                // ].map((el) => ({ title: el }));
+                // console.log(cat);
+                // setCategories(cat);
+                // setStatus(cat[0]);
             } catch (error) {
                 setDataList(ArticlesData);
             }
@@ -65,61 +82,105 @@ const Home = () => {
         fetchData();
     }, []);
     const setStatusFilter = (status) => {
-        Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
-            useNativeDriver: false,
-        });
         setStatus(status);
+    };
+    const handleCategoryChange = async (el) => {
+        setStatusFilter(el.title);
+        const res = await axios.get(
+            `${uri}/drupalwebsite/api/v1/recettes/${el.id}`
+        );
+        setDataList(res.data);
+        console.log(res.data);
     };
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <FocusedStatusBar backgroundColor={COLORS.primary} />
             <HomeHeader />
-            <AuthorsList />
-            <View style={[styles.tabsContainer]}>
-                <ScrollView
-                    style={{ position: "relative" }}
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                >
-                    {categories.map((el) => (
-                        <TouchableOpacity
-                            onPress={() => setStatusFilter(el.title)}
-                            key={el.title}
-                            style={{ marginHorizontal: 10 }}
-                        >
-                            <Text
-                                style={
-                                    status === el.title
-                                        ? styles.activeTab
-                                        : styles.tabText
-                                }
+            <ScrollView stickyHeaderIndices={[1]}>
+                <AuthorsList />
+                <View style={styles.tabsContainer}>
+                    <ScrollView
+                        style={{ position: "relative" }}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                    >
+                        {categories.map((el) => (
+                            <TouchableOpacity
+                                onPress={() => handleCategoryChange(el)}
+                                key={el.title}
+                                style={{ marginHorizontal: 10 }}
                             >
-                                {el.title}
-                            </Text>
-                            {status === el.title ? <Indicator /> : null}
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
-            </View>
-            <View style={styles.cardsContainer}>
-                {dataList.length > 0 && (
-                    <View style={{ zIndex: 0 }}>
-                        <FlatList
-                            data={dataList}
-                            renderItem={({ item }) => (
-                                <ArticleCard data={item} uri={uri} />
-                            )}
-                            keyExtractor={(item) => item.name}
-                            showsVerticalScrollIndicator={false}
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-                            // ListHeaderComponent={
+                                <Text
+                                    style={
+                                        status === el.title
+                                            ? styles.activeTab
+                                            : styles.tabText
+                                    }
+                                >
+                                    {el.title}
+                                </Text>
+                                {status === el.title ? <Indicator /> : null}
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+                <View style={styles.cardsContainer}>
+                    {dataList.length > 0 && (
+                        <View style={{ zIndex: 0 }}>
+                            <FlatList
+                                data={dataList}
+                                renderItem={({ item }) => (
+                                    <ArticleCard
+                                        data={item}
+                                        uri={uri}
+                                        width={width}
+                                    />
+                                )}
+                                keyExtractor={(item) =>
+                                    `${item.name}${item.id}`
+                                }
+                                showsVerticalScrollIndicator={false}
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                // ListHeaderComponent={
 
-                            // }
-                        />
-                    </View>
-                )}
-            </View>
+                                // }
+                            />
+                        </View>
+                    )}
+                </View>
+                <View style={styles.cardsContainer}>
+                    <Text
+                        style={{
+                            color: COLORS.primary,
+                            fontFamily: "Roboto-Bold",
+                            fontSize: 18,
+                            marginLeft: 14,
+                            marginVertical: 16,
+                        }}
+                    >
+                        Trending Collection
+                    </Text>
+                    {dataList.length > 0 && (
+                        <View
+                            style={{
+                                zIndex: 0,
+                                justifyContent: "center",
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                            }}
+                        >
+                            {dataList.map((item) => (
+                                <ArticleCard
+                                    data={item}
+                                    uri={uri}
+                                    width={width / 2}
+                                />
+                            ))}
+                        </View>
+                    )}
+                </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -197,6 +258,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
     },
     tabsContainer: {
+        backgroundColor: COLORS.white,
         paddingVertical: 15,
     },
     tabStyle: {

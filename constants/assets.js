@@ -11,6 +11,7 @@ import saveAlt from "../assets/icons/saveAlt.png";
 import save from "../assets/icons/save.png";
 import searchAlt from "../assets/icons/searchAlt.png";
 import circle from "../assets/icons/circle.png";
+import plus from "../assets/icons/plus.png";
 
 import logo from "../assets/images/logo.png";
 import nft01 from "../assets/images/nft01.png";
@@ -24,6 +25,7 @@ import nft07 from "../assets/images/nft07.jpeg";
 import user from "../assets/images/user.png";
 
 import background from "../assets/images/background.jpg";
+import hamburger from "../assets/icons/hamburger.png";
 
 export default {
     badge,
@@ -49,4 +51,6 @@ export default {
     save,
     searchAlt,
     circle,
+    plus,
+    hamburger,
 };
